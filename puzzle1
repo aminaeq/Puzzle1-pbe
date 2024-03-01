@@ -1,0 +1,12 @@
+class Rfid
+        def read_uid
+                data=gets.chomp
+                hex=data.to_i.to_s(16).upcase
+                return hex
+        end
+end
+if __FILE__==$0
+        rf=Rfid.new
+        uid=rf.read_uid
+        puts uid
+end
