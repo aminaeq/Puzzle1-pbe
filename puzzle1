@@ -1,8 +1,10 @@
+require 'io/console'
 class Rfid
         def read_uid
-                data=gets.chomp #guarda el valor sense salt de línea
+                data=STDIN.noecho(&:gets).chomp #elimina el eco i el salt de linea
                 hex=data.to_i.to_s(16).upcase #guarda el valor en format hexadecimal i majúscula
-                return hex
+                little_hex=hex.scan(/../).reverse.join('')
+                return little_hex
         end
 end
 if __FILE__==$0
