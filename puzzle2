@@ -1,0 +1,59 @@
+require 'io/console'
+require 'gtk3'
+require_relative 'rfid'
+
+@white = Gdk::RGBA.new(1.0,1.0,1.0,1.0)
+@blue = Gdk::RGBA.new(0,0,1.0,1.0)
+@red = Gdk::RGBA.new(1.0,0,0,1.0)
+
+#@uid=""
+@rfid = Rfid.new
+puts "antes de crear la ventana"
+@window = Gtk::Window.new("RFID")
+puts "despues crear ventana"
+@window.set_size_request(300, 150)
+@window.set_border_width(8)
+@window.set_window_position(:center)
+@window.signal_connect("delete-event") do |_widget|
+        puts "evento de cierre"
+         Gtk.main_quit
+end
+
+@grid = Gtk::Grid.new
+
+@label = Gtk::Label.new("Please, login with your university card")
+@label.override_background_color(:normal, @blue)
+@label.override_color(:normal, @white)
+@grid.attach(@label, 0, 0, 1, 1)
+
+@button = Gtk::Button.new(:label => "Clear")
+@grid.attach(@button, 0, 2, 1, 1)
+
+@entry=Gtk::Entry.new
+@grid.attach(@entry, 0, 1, 1, 1)
+
+@window.add(@grid)
+@window.show_all
+@button.signal_connect("clicked") do
+                @label.override_background_color(:normal, @blue)
+                @label.set_text("Please, login with your university card")
+                @entry.text=''
+                @entry.show
+end
+
+def read_uid(rfid, entry, label)
+        data=@entry.text
+
+        uid=@rfid.read_uid(data)
+
+        label.override_background_color(:normal, @red)
+        label.override_color(:normal, @white)
+        label.text= "Hexadecimal= #{uid}"
+        entry.hide
+end
+
+@entry.signal_connect("activate") do
+        read_uid(@rfid, @entry, @label)
+        @entry.text=''
+end
+Gtk.main
