@@ -6,16 +6,13 @@ require_relative 'rfid'
 @blue = Gdk::RGBA.new(0,0,1.0,1.0)
 @red = Gdk::RGBA.new(1.0,0,0,1.0)
 
-#@uid=""
 @rfid = Rfid.new
-puts "antes de crear la ventana"
+
 @window = Gtk::Window.new("RFID")
-puts "despues crear ventana"
 @window.set_size_request(300, 150)
 @window.set_border_width(8)
 @window.set_window_position(:center)
 @window.signal_connect("delete-event") do |_widget|
-        puts "evento de cierre"
          Gtk.main_quit
 end
 
@@ -43,12 +40,12 @@ end
 
 def read_uid(rfid, entry, label)
         data=@entry.text
-
         uid=@rfid.read_uid(data)
-
         label.override_background_color(:normal, @red)
         label.override_color(:normal, @white)
         label.text= "Hexadecimal= #{uid}"
+        label.expand=true
+        label.vexpand=true
         entry.hide
 end
 
